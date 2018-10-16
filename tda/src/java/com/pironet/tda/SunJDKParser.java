@@ -225,7 +225,7 @@ public class SunJDKParser extends AbstractDumpParser {
                             }
 
                             // Second, initialize state for this new thread
-                            title = line;
+                            title = line + " " + getNextLine() + " " + getNextLine();
                             content = new StringBuffer("<body bgcolor=\"ffffff\"><pre><font size=" + TDA.getFontSizeModifier(-1) + ">");
                             content.append(line);
                             content.append("\n");
@@ -1016,7 +1016,14 @@ public class SunJDKParser extends AbstractDumpParser {
                     tokens[4] = nidToken;
                 }
 
-                if (strippedToken.indexOf('[') > 0) {
+                if(strippedToken.indexOf("pthread-id") > 0) {
+                    if(strippedToken.substring(strippedToken.indexOf(" ", strippedToken.indexOf("pthread-id=")) + 1).indexOf('[') > 0) {
+                        tokens[5] = strippedToken.substring(strippedToken.indexOf(" ", strippedToken.indexOf("pthread-id=")) + 1, strippedToken.indexOf('[',
+                            strippedToken.indexOf("pthread-id=")) - 1);
+                    } else {
+                        tokens[5] = strippedToken.substring(strippedToken.indexOf(" ", strippedToken.indexOf("pthread-id=")) + 1);
+                    }
+                } else if (strippedToken.indexOf('[') > 0) {
                     if (strippedToken.indexOf("lwp_id=") > 0) {
                         tokens[5] = strippedToken.substring(strippedToken.indexOf(" ", strippedToken.indexOf("lwp_id=")) + 1, strippedToken.indexOf('[',
                                 strippedToken.indexOf("lwp_id=")) - 1);
